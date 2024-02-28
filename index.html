@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>단체대여 개인 입력</title>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #fed513;
+    }
+</style>
+</head>
+<body>
+
+<h2>단체대여 개인 입력</h2>
+
+<table id="infoTable">
+  <tr>
+    <th>이름</th>
+    <th>성별</th>
+    <th>키</th>
+    <th>몸무게</th>
+    <th>상의사이즈</th>
+    <th>하의사이즈</th>
+    <th>구두사이즈</th>
+    <th>대여품목</th>
+    <th>정장색상</th>
+  </tr>
+</table>
+
+<br>
+<button onclick="addRow()">새 정보 입력</button>
+<button onclick="exportToExcel()">액셀로 저장</button>
+
+<script>
+function addRow() {
+  var table = document.getElementById("infoTable");
+  var row = table.insertRow(-1);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
+  var cell7 = row.insertCell(6);
+  var cell8 = row.insertCell(7);
+  var cell9 = row.insertCell(8);
+  cell1.innerHTML = '<input type="text">';
+  cell2.innerHTML = '<select><option value="남성">남성</option><option value="여성">여성</option></select>';
+  cell4.innerHTML = '<input type="text">';
+  cell5.innerHTML = '<input type="text">';
+  cell6.innerHTML = '<input type="text">';
+  cell7.innerHTML = '<input type="text">';
+  cell8.innerHTML = '<input type="text">';
+  cell9.innerHTML = '<select><option value="블랙">블랙</option><option value="네이비">네이비</option><option value="차콜그레이">차콜그레이</option></select>';
+  cell3.innerHTML = '<input type="text">';
+}
+
+function exportToExcel() {
+  var table = document.getElementById("infoTable");
+  var html = table.outerHTML;
+  var blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'personal_info.xls';
+  a.click();
+}
+</script>
+
+</body>
+</html>
