@@ -107,7 +107,7 @@
     }
 
     function downloadCsvFile(csvData) {
-      const csvFile = new Blob([csvData], { type: "text/csv" });
+      const csvFile = new Blob([csvData], { type: "text/csv;charset=utf-8" });
 
       const tempLink = document.createElement('a');
       tempLink.download = "theopencloset-group-rental.csv";
