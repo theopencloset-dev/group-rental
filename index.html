@@ -1,81 +1,124 @@
-
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>단체대여 개인 입력</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>단체대여 개인 입력</title>
+  <style>
     table {
-        border-collapse: collapse;
-        width: 100%;
+      border-collapse: collapse;
+      width: 100%;
     }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
     }
+
     th {
-        background-color: #fed513;
+      background-color: #fed513;
     }
-</style>
+  </style>
 </head>
+
 <body>
 
-<h2>단체대여 개인 입력</h2>
+  <h2>단체대여 개인 입력</h2>
 
-<table id="infoTable">
-  <tr>
-    <th>이름</th>
-    <th>성별</th>
-    <th>키</th>
-    <th>몸무게</th>
-    <th>상의사이즈</th>
-    <th>하의사이즈</th>
-    <th>구두사이즈</th>
-    <th>대여품목</th>
-    <th>정장색상</th>
-  </tr>
-</table>
+  <table id="info-table">
+    <tr>
+      <th>이름</th>
+      <th>성별</th>
+      <th>키</th>
+      <th>몸무게</th>
+      <th>상의사이즈</th>
+      <th>하의사이즈</th>
+      <th>구두사이즈</th>
+      <th>대여품목</th>
+      <th>정장 색상</th>
+    </tr>
+  </table>
 
-<br>
-<button onclick="addRow()">새 정보 입력</button>
-<button onclick="exportToExcel()">액셀로 저장</button>
+  <br>
+  <button onclick="addRow()">대여 인원 추가</button>
+  <button onclick="tableToCSV()">파일로 저장</button>
 
-<script>
-function addRow() {
-  var table = document.getElementById("infoTable");
-  var row = table.insertRow(-1);
-  var cell1 = row.insertCell(0);
-  var cell2 = row.insertCell(1);
-  var cell3 = row.insertCell(2);
-  var cell4 = row.insertCell(3);
-  var cell5 = row.insertCell(4);
-  var cell6 = row.insertCell(5);
-  var cell7 = row.insertCell(6);
-  var cell8 = row.insertCell(7);
-  var cell9 = row.insertCell(8);
-  cell1.innerHTML = '<input type="text">';
-  cell2.innerHTML = '<select><option value="남성">남성</option><option value="여성">여성</option></select>';
-  cell4.innerHTML = '<input type="text">';
-  cell5.innerHTML = '<input type="text">';
-  cell6.innerHTML = '<input type="text">';
-  cell7.innerHTML = '<input type="text">';
-  cell8.innerHTML = '<input type="text">';
-  cell9.innerHTML = '<select><option value="블랙">블랙</option><option value="네이비">네이비</option><option value="차콜그레이">차콜그레이</option></select>';
-  cell3.innerHTML = '<input type="text">';
-}
+  <script>
+    function addRow() {
+      const table = document.getElementById("info-table");
+      const row = table.insertRow(-1);
+      const nameCell = row.insertCell(0);
+      const genderCell = row.insertCell(1);
+      const heightCell = row.insertCell(2);
+      const weightCell = row.insertCell(3);
+      const topCell = row.insertCell(4);
+      const bottomCell = row.insertCell(5);
+      const shoesCell = row.insertCell(6);
+      const objectsCell = row.insertCell(7);
+      const colorCell = row.insertCell(8);
+      nameCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      genderCell.innerHTML = '<select class="measurement-data"><option value="남성">남성</option><option value="여성">여성</option></select>';
+      heightCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      weightCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      topCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      bottomCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      shoesCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      objectsCell.innerHTML = '<input class="measurement-data" type="text" required>';
+      colorCell.innerHTML = '<select class="measurement-data"><option value="블랙">블랙</option><option value="네이비">네이비</option><option value="차콜그레이">차콜그레이</option></select>';
+    }
 
-function exportToExcel() {
-  var table = document.getElementById("infoTable");
-  var html = table.outerHTML;
-  var blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'personal_info.xls';
-  a.click();
-}
-</script>
+    function tableToCSV() {
+      let csvData = [];
+
+      const rows = document.getElementsByTagName('tr');
+
+      const headers = rows[0].querySelectorAll('th');
+      const csvHeaders = [];
+
+      for (let i = 0; i < headers.length; i++) {
+        csvHeaders.push(headers[i].innerHTML);
+      }
+      csvData.push(csvHeaders.join(","));
+
+
+      for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i].querySelectorAll('td');
+
+        const csvRow = [];
+        for (let j = 0; j < cols.length; j++) {
+          csvRow.push(cols[j].querySelector('.measurement-data')?.value);
+        }
+
+        csvData.push(csvRow.join(","));
+      }
+
+
+      csvData = csvData.join('\n');
+
+      downloadCsvFile(csvData);
+    }
+
+    function downloadCsvFile(csvData) {
+      const csvFile = new Blob([csvData], { type: "text/csv" });
+
+      const tempLink = document.createElement('a');
+      tempLink.download = "theopencloset-group-rental.csv";
+      const url = window.URL.createObjectURL(csvFile);
+      tempLink.href = url;
+
+      tempLink.style.display = "none";
+      document.body.appendChild(tempLink);
+
+      tempLink.click();
+      document.body.removeChild(tempLink);
+    }
+
+    addRow();
+  </script>
 
 </body>
+
 </html>
